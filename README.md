@@ -1,152 +1,142 @@
-# AROMIA Web
+<p align="center">
+  <img src="public/logo.png" alt="AROMIA Logo" width="150"/>
+</p>
 
-Portal oficial y sistema de licencias de **AROMIA Desktop** (sistema de gestión de productos aromáticos).
+<h1 align="center">AROMIA Web</h1>
 
-**Estado:** Fase 1 (base web) + Fase 2 (sistema de licenciamiento) implementadas. Incluye Edge Functions de licenciamiento (crear/activar/validar/desactivar), panel admin (`/admin`) y firma Ed25519. La integración con AROMIA Desktop (cliente que consume las Edge Functions) se realiza en el proyecto del Desktop.
+<p align="center">
+  Portal oficial y sistema de licencias de <strong>AROMIA Desktop</strong> — la plataforma de gestión de productos aromáticos.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React"/>
+  <img src="https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
+  <img src="https://img.shields.io/badge/Supabase-2.45-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase"/>
+  <img src="https://img.shields.io/badge/React_Router-6.28-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white" alt="React Router"/>
+  <img src="https://img.shields.io/badge/Lucide-0.45-000000?style=for-the-badge&logo=lucide&logoColor=white" alt="Lucide"/>
+</p>
 
 ---
 
-## Tecnologías
+## Descripción
 
-- [React](https://react.dev/) + [Vite](https://vite.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [React Router](https://reactrouter.com/)
-- [Supabase](https://supabase.com/) (Auth + PostgreSQL + RLS)
-- [@supabase/supabase-js](https://supabase.com/docs/reference/javascript)
-- [Lucide](https://lucide.dev/) (iconografía)
+**AROMIA Web** es la plataforma web que acompaña a **AROMIA Desktop**, un sistema de gestión de productos aromáticos. Este proyecto proporciona:
+
+- **Landing page** pública con información sobre el producto, características, beneficios, capturas de pantalla, FAQ y contacto.
+- **Sistema de autenticación** completo: registro, inicio de sesión, recuperación y restablecimiento de contraseña.
+- **Panel de usuario** privado con perfil, estado de cuenta, descargas, licencia y dispositivos.
+- **Panel de administración** para gestionar licencias, buscar clientes y administrar dispositivos.
+- **Sistema de licenciamiento** con Edge Functions de Supabase, firma Ed25519 y validación de licencias.
+
+---
+
+## Estado
+
+| Fase | Estado |
+|------|--------|
+| Fase 1 — Base web (landing, auth, panel usuario) | Implementada |
+| Fase 2 — Sistema de licenciamiento (Edge Functions, panel admin, firma Ed25519) | Implementada |
+| Integración con AROMIA Desktop | Pendiente |
+
+---
 
 ## Estructura del proyecto
 
 ```
-├── public/                  # estáticos (favicon)
+├── public/                  # Estáticos (favicon, logo)
 ├── src/
 │   ├── components/
-│   │   ├── auth/            # ProtectedRoute, GuestRoute, AuthCard, AdminRoute
+│   │   ├── auth/            # ProtectedRoute, AdminRoute, AuthCard
 │   │   ├── dashboard/       # PageHeader, ComingSoonSection
 │   │   ├── public/          # Hero, Features, Benefits, Screenshots, FAQ, Contact…
-│   │   └── ui/              # sistema de diseño (Button, Input, Card, Badge, Alert, Logo…)
+│   │   └── ui/              # Sistema de diseño (Button, Input, Card, Badge, Alert, Logo…)
 │   ├── contexts/AuthContext.tsx
 │   ├── layouts/             # PublicLayout, AuthLayout, DashboardLayout, AdminLayout
 │   ├── lib/
-│   │   ├── supabase/client.ts  # cliente público (SOLO anon key)
-│   │   ├── admin.ts            # capa de acceso a las Edge Functions admin
-│   │   ├── config.ts           # constantes públicas + estructura de descargas
+│   │   ├── supabase/client.ts  # Cliente público (solo anon key)
+│   │   ├── admin.ts            # Capa de acceso a Edge Functions admin
+│   │   ├── config.ts           # Constantes públicas + estructura de descargas
 │   │   └── cn.ts
 │   ├── pages/
 │   │   ├── auth/            # Login, Register, ForgotPassword, ResetPassword
 │   │   ├── dashboard/       # DashboardIndex, MyAccount, Downloads, MyLicense, MyDevices
-│   │   ├── admin/           # AdminIndex (panel de licenciamiento)
+│   │   ├── admin/           # AdminIndex (panel de administración)
 │   │   ├── public/Home.tsx
 │   │   └── NotFound.tsx
-│   ├── types/               # tipos de la BD y del dominio
+│   ├── types/               # Tipos de la BD y del dominio
 │   └── styles/index.css
 ├── supabase/
-│   ├── migrations/          # Fase 1 (profiles) + Fase 2 (licensing + admin)
+│   ├── migrations/          # Migraciones de BD (profiles, licenses, devices, admin)
 │   └── functions/           # Edge Functions de licenciamiento
-└── docs/                    # análisis, investigación, plan
+└── docs/                    # Documentación, investigación y planificación
 ```
 
-## Instalación y ejecución
+---
 
-Requisitos: **Node.js 22+** y **npm**.
+## Instalación
+
+**Requisitos:** Node.js 22+ y npm.
 
 ```bash
-# 1. Instalar dependencias
+# 1. Clonar el repositorio
+git clone https://github.com/keinergarcia/Aromia_web.git
+cd Aromia_web
+
+# 2. Instalar dependencias
 npm install
 
-# 2. Configurar variables de entorno
-#    Copia .env.example como .env y rellena los valores de tu proyecto Supabase.
+# 3. Configurar variables de entorno
 cp .env.example .env
+# Edita .env con los valores de tu proyecto Supabase
 
-# 3. Ejecutar en desarrollo
+# 4. Ejecutar en desarrollo
 npm run dev
 ```
 
-### Scripts disponibles
+### Scripts
 
 | Comando | Descripción |
 |---|---|
 | `npm run dev` | Servidor de desarrollo Vite |
-| `npm run build` | Compila producción (`tsc -b && vite build`) |
+| `npm run build` | Compila para producción (`tsc -b && vite build`) |
 | `npm run lint` | ESLint |
 | `npm run preview` | Previsualiza el build de producción |
 
-> No existe un script `typecheck` independiente: la comprobación de tipos se
-> ejecuta como parte de `npm run build` (vía `tsc -b`).
+---
 
 ## Configuración de Supabase
 
-1. Crea un proyecto en https://supabase.com.
-2. En **Project Settings → API**, copia la **URL** y la **anon/publishable key**.
-3. Rellena `.env`:
+1. Crea un proyecto en [supabase.com](https://supabase.com).
+2. En **Project Settings → API**, copia la **URL** y la **anon key**.
+3. Configura `.env`:
    ```
    VITE_SUPABASE_URL=<tu project url>
-   VITE_SUPABASE_ANON_KEY=<tu anon/publishable key>
+   VITE_SUPABASE_ANON_KEY=<tu anon key>
    ```
+4. Aplica las migraciones desde `supabase/migrations/` en el SQL Editor de Supabase o con `supabase db push`.
+5. En **Authentication → URL Configuration**, configura la **Site URL** y las **Redirect URLs**.
 
-> **Nunca** coloques la `service_role` / `secret key` en el frontend. Se reservan
-> exclusivamente para operaciones de servidor (Edge Functions).
+> **Nunca** coloques la `service_role key` en el frontend.
 
-### Aplicar la migración
-
-La migración `supabase/migrations/0001_create_profiles.sql` crea la tabla
-`profiles` con sus políticas RLS y el trigger que crea el perfil al registrarse.
-
-Puedes ejecutarla en el **SQL Editor** del dashboard de Supabase pegando el contenido
-del archivo, o con la CLI:
-
-```bash
-# (opcional) con la CLI de Supabase
-supabase db push
-```
-
-### Configuración de autenticación
-
-En **Authentication → URL Configuration**:
-
-- **Site URL:** la URL de tu aplicación (p. ej. `http://localhost:5173` en desarrollo).
-- **Redirect URLs:** añade tu URL para los flujos de confirmación y recuperación.
-
-Según la configuración de tu proyecto, el registro puede requerir confirmación de
-correo (recomendado). La app ya maneja ambos casos:
-
-- Con confirmación activada: tras el registro se muestra *"Revisa tu correo"*.
-- Sin confirmación: la sesión se inicia directamente y se redirige al panel.
+---
 
 ## Variables de entorno
 
-### Públicas (en el frontend, `VITE_`)
+### Públicas (frontend)
+
 | Variable | Descripción |
 |---|---|
 | `VITE_SUPABASE_URL` | URL del proyecto Supabase |
-| `VITE_SUPABASE_ANON_KEY` | Clave anon/publishable (pública por diseño) |
+| `VITE_SUPABASE_ANON_KEY` | Clave anon/publishable (pública por diseño, protegida por RLS) |
 
-La anon key es segura en el navegador **porque la base de datos está protegida con RLS**.
+### Secretas (solo Edge Functions)
 
-### Secretas (NUNCA en el frontend)
-- `SUPABASE_SERVICE_ROLE_KEY` / `SUPABASE_SECRET_KEYS` — reservadas para Edge Functions (inyectadas automáticamente).
-- `AROMIA_SIGNING_PRIVATE_KEY`, `AROMIA_SIGNING_PUBLIC_KEY`, `AROMIA_KEY_ID` — par Ed25519 de firma de licencias (solo servidor). Se configuran con `supabase secrets set`.
+- `SUPABASE_SERVICE_ROLE_KEY` — Inyectada automáticamente por Supabase.
+- `AROMIA_SIGNING_PRIVATE_KEY`, `AROMIA_SIGNING_PUBLIC_KEY`, `AROMIA_KEY_ID` — Par Ed25519 de firma de licencias. Se configuran con `supabase secrets set`.
 
-## Tablas y RLS (Fase 1)
-
-**Única tabla adicional:** `public.profiles`, relacionada con `auth.users`.
-
-| Columna | Tipo | Descripción |
-|---|---|---|
-| `id` | uuid PK → `auth.users(id)` | Identidad del usuario |
-| `email` | text | Correo del usuario |
-| `full_name` | text | Nombre mostrado |
-| `account_status` | text (default `active`) | Estado de la cuenta |
-| `created_at` / `updated_at` | timestamptz | Marcas de tiempo |
-
-**Políticas RLS** (cada usuario solo gestiona su propio perfil):
-
-- `select_own_profile`: `USING (auth.uid() = id)`
-- `insert_own_profile`: `WITH CHECK (auth.uid() = id)`
-- `update_own_profile`: `USING (auth.uid() = id) WITH CHECK (auth.uid() = id)`
-
-Sin permisos para `anon`. El perfil se crea automáticamente mediante un trigger
-al insertarse el usuario en `auth.users` (copia el `full_name` de los metadatos).
+---
 
 ## Rutas
 
@@ -157,42 +147,44 @@ al insertarse el usuario en `auth.users` (copia el `full_name` de los metadatos)
 | `/registro` | Solo sin sesión | Registro |
 | `/recuperar` | Solo sin sesión | Recuperación de contraseña |
 | `/restablecer` | Sesión de recuperación | Establecer nueva contraseña |
-| `/dashboard` | Privado | Panel principal (usuario + estado de cuenta) |
+| `/dashboard` | Privado | Panel principal |
 | `/dashboard/mi-cuenta` | Privado | Perfil y datos de cuenta |
-| `/dashboard/descargas` | Privado | Sección de descargas preparada |
-| `/dashboard/mi-licencia` | Privado | Placeholder (integración con Desktop pendiente) |
-| `/dashboard/mis-dispositivos` | Privado | Placeholder (integración con Desktop pendiente) |
+| `/dashboard/descargas` | Privado | Sección de descargas |
+| `/dashboard/mi-licencia` | Privado | Licencia del usuario |
+| `/dashboard/mis-dispositivos` | Privado | Dispositivos vinculados |
 | `/admin` | Privado + rol admin | Panel de administración de licencias |
+
+---
 
 ## Seguridad
 
-- El frontend usa **solo** la anon/publishable key. Ningún secreto en el cliente.
-- **RLS** activada en `profiles`: imposible cruzar perfiles entre usuarios.
-- Rutas privadas protegidas por `ProtectedRoute` (redirige a `/login`).
+- Frontend usa **solo** la anon key. Ningún secreto en el cliente.
+- **RLS** activada en todas las tablas: cada usuario solo accede a sus datos.
+- Rutas protegidas con `ProtectedRoute` y `AdminRoute`.
+- Firma **Ed25519**: la private key vive exclusivamente en las secrets de Supabase.
 - Logout elimina la sesión local; no se puede volver al panel con el botón Atrás.
-- La sección de descargas no expone ningún instalador ni enlace falso todavía.
 
-## Alcance del sistema
+---
 
-**Fase 1 (implementada):** landing pública, registro, inicio de sesión, recuperación y
-restablecimiento de contraseña, cierre de sesión, panel privado con perfil y estado de
-cuenta, sección de descargas preparada, Supabase Auth + `profiles` + RLS.
+## Edge Functions
 
-**Fase 2 — Licenciamiento (implementada):**
-- Tablas y RLS: `licenses`, `devices`, `license_activations`, `admin_users`, `app_versions`.
-- Edge Functions (Deno): `create-license`, `activate-license`, `validate-license`,
-  `deactivate-device`, `get-latest-version` + panel admin (`admin-list-licenses`,
-  `admin-users-search`, `admin-license-update`, `admin-deactivate-device`) + panel
-  cliente (`client-my-license`, `client-my-devices`).
-- Firma **Ed25519**: la private key vive solo en las secrets de la Edge Function;
-  `get-latest-version` entrega la public key al Desktop.
-- Secretos: `AROMIA_SIGNING_PRIVATE_KEY`, `AROMIA_SIGNING_PUBLIC_KEY`, `AROMIA_KEY_ID`.
-- Panel admin `/admin` (protegido por rol): crear/listar/suspender/revocar/renovar
-  licencias, buscar clientes, ver y desactivar dispositivos.
-- Panel cliente `/dashboard/mi-licencia` y `/mis-dispositivos`: cada usuario autenticado
-  ve SOLO sus licencias y dispositivos (servidos vía Edge Functions, sin exponer el
-  `license_key`), y puede desactivar sus propios equipos.
+| Función | Descripción |
+|---|---|
+| `create-license` | Crea una nueva licencia |
+| `activate-license` | Activa la licencia en un dispositivo |
+| `validate-license` | Validez de una licencia |
+| `deactivate-device` | Desactiva un dispositivo |
+| `get-latest-version` | Entrega la última versión y la public key |
+| `admin-list-licenses` | Lista todas las licencias (admin) |
+| `admin-users-search` | Busca clientes (admin) |
+| `admin-license-update` | Actualiza licencias (admin) |
+| `admin-deactivate-device` | Desactiva dispositivos desde admin |
+| `client-my-license` | Licencia del usuario autenticado |
+| `client-my-devices` | Dispositivos del usuario autenticado |
 
-**Pendiente (proyecto AROMIA Desktop):** consumir `activate-license`/`validate-license`,
-cálculo de fingerprint, verificación offline de la firma con la public key y la pantalla
-de activación.
+---
+
+<p align="center">
+  Desarrollado por <strong>ElChivalez</strong><br/>
+  <sub>Septiembre 2025</sub>
+</p>
