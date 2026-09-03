@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface-950 font-sans text-slate-200;
+  }
+
+  ::selection {
+    @apply bg-primary-600/40 text-white;
+  }
+
+  /* Fallback de foco visible por teclado para enlaces y botones que no
+     definen sus propios estilos (navbar, footer, FAQ, etc.). Specificity 0
+     para que las utilidades puntuales sigan ganando. */
+  :where(a[href], button, [tabindex]):focus-visible {
+    outline: 2px solid theme('colors.primary.500');
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  /* Scrollbar sutil acorde a la identidad */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a12;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a3c;
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a52;
+  }
+}

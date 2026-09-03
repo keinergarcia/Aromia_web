@@ -1,0 +1,78 @@
+# =============================================================================
+# AROMIA Web — Supabase local configuration
+# Fase 2 (Licenciamiento). Generado a partir de la template del CLI.
+# =============================================================================
+
+# PROJECT_ID: usa el slug del proyecto Supabase (CUIDADO: no cambies el valor si
+# hay un proyecto vinculado; lo determina `supabase link`).
+project_id = "aromia-web"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+# La anon/publishable key solo puede acceder a los objetos que RLS permite.
+# En lugar de la clásica "anon key" se usa el nuevo sistema de API keys
+# (publishable para el navegador, secret para el servidor/Edge Functions).
+# Supabase inyecta SUPABASE_PUBLISHABLE_KEYS / SUPABASE_SECRET_KEYS en las
+# Edge Functions automáticamente.
+max_rows = 1000
+
+[db]
+port = 54322
+# El pooler no se usa en este proyecto (Tailscale/red local de desarrollo).
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+# Custom Access Token Hook: en producción se inyecta app_metadata.role = 'admin'
+# a partir de la tabla public.admin_users (ver docs/AROMIA_WEB_diseno_fase2.md §3.5).
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/*"]
+jwt_expiry = 3600
+
+[edge_runtime]
+enabled = true
+# Credenciales/entorno para las Edge Functions (secrets de firma Ed25519 y key_id).
+# En producción se configuran vía `supabase secrets set` (ver §2.3 del diseño).
+policy = "per_worker"
+inspector_port = 8083
+
+[functions.get-latest-version]
+verify_jwt = false
+
+[functions.create-license]
+verify_jwt = false
+
+[functions.activate-license]
+verify_jwt = false
+
+[functions.validate-license]
+verify_jwt = false
+
+[functions.deactivate-device]
+verify_jwt = false
+
+[functions.admin-list-licenses]
+verify_jwt = false
+
+[functions.admin-users-search]
+verify_jwt = false
+
+[functions.admin-license-update]
+verify_jwt = false
+
+[functions.admin-deactivate-device]
+verify_jwt = false
