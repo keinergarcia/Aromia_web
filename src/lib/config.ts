@@ -22,13 +22,22 @@ export const LINKS = {
 } as const
 
 /**
+ * Construye una URL absoluta de la app en el origen actual, incluyendo el
+ * base path (import.meta.env.BASE_URL) para que funcione en despliegues bajo
+ * subruta, como GitHub Pages.
+ */
+export function appUrl(path: string): string {
+  return `${window.location.origin}${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+}
+
+/**
  * URL a la que Supabase debe redirigir tras validar el enlace de recuperación.
  * Se construye con el origen actual para adaptarse a cada entorno (dev y
  * producción) sin configuración extra. Debe estar permitida en
  * Auth → URL Configuration → Redirect URLs de Supabase.
  */
 export function getResetRedirectURL(): string {
-  return `${window.location.origin}${LINKS.reset}`
+  return appUrl(LINKS.reset)
 }
 
 /**
@@ -73,7 +82,7 @@ export const APP_RELEASE: AppRelease = {
     'Copia de seguridad automática diaria.',
     'Los datos se guardan en la carpeta de usuario (%AppData%\\Aromia).',
   ],
-  url: '/Aromia-Setup-1.0.0.exe',
+  url: `${import.meta.env.BASE_URL}Aromia-Setup-1.0.0.exe`,
 }
 
 export type DownloadStatus = 'download-ready' | 'coming-soon'

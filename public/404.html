@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirigiendo…</title>
+    <script>
+      // Fallback para GitHub Pages: al refrescar una subruta (p. ej. /Aromia_web/dashboard)
+      // GitHub sirve este 404.html. Guarda la ruta original en sessionStorage y vuelve
+      // a index.html; el script de index.html restaura la URL para el router de la SPA.
+      var path = window.location.pathname.replace('/Aromia_web', '')
+      sessionStorage.redirect = (path || '/') + window.location.search
+      window.location.replace('/Aromia_web/index.html')
+    </script>
+  </head>
+  <body></body>
+</html>

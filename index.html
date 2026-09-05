@@ -2,13 +2,21 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
       content="AROMIA — Sistema de gestión para productos aromáticos. Administra tu inventario, producción y ventas con una aplicación profesional y moderna."
     />
     <title>AROMIA — Sistema de Gestión de Productos Aromáticos</title>
+    <script>
+      // Restaura la ruta de la SPA tras el fallback de GitHub Pages (public/404.html).
+      if (sessionStorage.redirect) {
+        var r = sessionStorage.redirect
+        delete sessionStorage.redirect
+        history.replaceState(null, '', r)
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

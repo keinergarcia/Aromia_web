@@ -8,7 +8,7 @@ import { PasswordInput } from '@/components/ui/PasswordInput'
 import { Button } from '@/components/ui/Button'
 import { Alert } from '@/components/ui/Alert'
 import { supabase } from '@/lib/supabase/client'
-import { LINKS } from '@/lib/config'
+import { LINKS, appUrl } from '@/lib/config'
 import { mapAuthError } from '@/lib/auth-errors'
 
 function requiredPassword(value: string): string | null {
@@ -51,7 +51,7 @@ export function Register() {
         // Devuelve el enlace de confirmación a la app para que supabase-js
         // procese el token (detectSessionInUrl). Debe estar permitido en
         // Auth → URL Configuration → Redirect URLs de Supabase.
-        emailRedirectTo: `${window.location.origin}${LINKS.dashboard}`,
+        emailRedirectTo: appUrl(LINKS.dashboard),
       },
     })
 
@@ -77,7 +77,7 @@ export function Register() {
     const { error: err } = await supabase.auth.resend({
       type: 'signup',
       email: email.trim(),
-      options: { emailRedirectTo: `${window.location.origin}${LINKS.dashboard}` },
+      options: { emailRedirectTo: appUrl(LINKS.dashboard) },
     })
 
     setLoading(false)

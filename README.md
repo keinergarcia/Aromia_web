@@ -161,6 +161,30 @@ npm run dev
 
 ---
 
+## Despliegue en GitHub Pages
+
+El flujo **Deploy to GitHub Pages** publica automáticamente la rama `main` en
+`https://keinergarcia.github.io/Aromia_web/`.
+
+Requisitos (solo la primera vez):
+
+1. En **Settings → Secrets and variables → Actions** del repo crea dos secrets
+   (van a las variables de entorno del build):
+   - `VITE_SUPABASE_URL` — URL de tu proyecto Supabase.
+   - `VITE_SUPABASE_ANON_KEY` — la anon/publishable key.
+2. En **Settings → Pages** selecciona **Source: GitHub Actions**.
+3. En Supabase (**Authentication → URL Configuration**):
+   - **Site URL**: `https://keinergarcia.github.io/Aromia_web`
+   - **Redirect URLs**: `https://keinergarcia.github.io/Aromia_web/**`
+
+Con cada `push` a `main` (o desde **Actions → Deploy to GitHub Pages → Run
+workflow**) el build se genera en CI y se publica. El frontend resuelve sus
+rutas con `import.meta.env.BASE_URL`, y `public/404.html` evita el 404 al
+refrescar subrutas (`/dashboard`, `/admin`, …). La base de datos y las Edge
+Functions permanecen en Supabase.
+
+---
+
 ## Variables de entorno
 
 ### Públicas (frontend)
