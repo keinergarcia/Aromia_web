@@ -11,7 +11,7 @@ export function Logo({ className, size = 'md' }: LogoProps) {
   return (
     <div className={cn('flex items-center gap-2.5', className)}>
       <img
-        src="/logo.png"
+        src={`${import.meta.env.BASE_URL}logo.png`}
         alt="Logo de AROMIA"
         className={cn(
           'rounded-xl object-contain',
