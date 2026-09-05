@@ -13,7 +13,7 @@ export default {
 
     let query = ctx.supabaseAdmin
       .from('licenses')
-      .select('id, customer_id, product, plan, status, max_activations, issued_at, expires_at, min_app_version, max_app_version, activated_at, last_validated_at, activation_count, created_at, updated_at, profiles(id, email, full_name), license_activations(id, status, activated_at, last_validated_at, devices(id, device_name, os, fingerprint))')
+      .select('id, customer_id, license_key, product, plan, status, max_activations, issued_at, expires_at, min_app_version, max_app_version, activated_at, last_validated_at, activation_count, created_at, updated_at, profiles(id, email, full_name), license_activations(id, status, device_id, activated_at, last_validated_at, deactivated_at, devices(id, device_name, os, fingerprint))')
 
     const url = new URL(req.url)
     const status = url.searchParams.get('status')

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { KeyRound, MonitorSmartphone, CalendarDays, Activity } from 'lucide-react'
+import { KeyRound, MonitorSmartphone, CalendarDays, Activity, Copy, Check } from 'lucide-react'
 import { PageHeader } from '@/components/dashboard/PageHeader'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Alert } from '@/components/ui/Alert'
 import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { myLicenses, type MyLicense } from '@/lib/licenses'
 import { cn } from '@/lib/cn'
@@ -34,6 +35,18 @@ export function MyLicense() {
   const [licenses, setLicenses] = useState<MyLicense[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+
+  const copyKey = async (lic: MyLicense) => {
+    if (!lic.license_key) return
+    try {
+      await navigator.clipboard.writeText(lic.license_key)
+      setCopiedId(lic.id)
+      window.setTimeout(() => setCopiedId((c) => (c === lic.id ? null : c)), 1500)
+    } catch {
+      setError('No se pudo copiar la clave')
+    }
+  }
 
   useEffect(() => {
     let mounted = true
@@ -128,6 +141,31 @@ export function MyLicense() {
                   value={formatDate(lic.issued_at)}
                 />
               </div>
+
+              {lic.license_key && (
+                <div className="flex flex-col gap-1.5 rounded-xl border border-white/10 bg-surface-800/60 p-4">
+                  <span className="text-xs text-slate-400">Tu clave de licencia</span>
+                  <div className="flex items-center gap-2">
+                    <code className="min-w-0 flex-1 truncate font-mono text-sm font-semibold text-white">
+                      {lic.license_key}
+                    </code>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => void copyKey(lic)}
+                      leftIcon={
+                        copiedId === lic.id ? (
+                          <Check className="h-3.5 w-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5" />
+                        )
+                      }
+                    >
+                      {copiedId === lic.id ? 'Copiada' : 'Copiar'}
+                    </Button>
+                  </div>
+                </div>
+              )}
 
               {lic.license_activations.length > 0 && (
                 <div>

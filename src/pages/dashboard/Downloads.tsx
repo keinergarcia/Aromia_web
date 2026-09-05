@@ -38,11 +38,18 @@ export function Downloads() {
           </Badge>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Alert variant="info">
-            El instalador oficial de AROMIA estará disponible próximamente.
-            Cuando se defina el mecanismo de distribución, esta sección mostrará
-            el enlace de descarga.
-          </Alert>
+          {ready ? (
+            <Alert variant="success">
+              AROMIA {APP_RELEASE.version} está disponible para descargar e
+              instalar en Windows.
+            </Alert>
+          ) : (
+            <Alert variant="info">
+              El instalador oficial de AROMIA estará disponible próximamente.
+              Cuando se defina el mecanismo de distribución, esta sección mostrará
+              el enlace de descarga.
+            </Alert>
+          )}
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {infoRows.map((row) => (

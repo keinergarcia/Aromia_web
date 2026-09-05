@@ -11,6 +11,7 @@ const FUNCTIONS = {
   searchProfiles: 'admin-users-search',
   updateLicense: 'admin-license-update',
   deactivateDevice: 'admin-deactivate-device',
+  reactivateDevice: 'admin-reactivate-device',
 } as const
 
 export interface ListLicensesParams {
@@ -86,6 +87,16 @@ export async function deactivateDevice(
   deviceId: string,
 ): Promise<void> {
   await invoke<FunctionError>(FUNCTIONS.deactivateDevice, {
+    license_id: licenseId,
+    device_id: deviceId,
+  })
+}
+
+export async function reactivateDevice(
+  licenseId: string,
+  deviceId: string,
+): Promise<void> {
+  await invoke<FunctionError>(FUNCTIONS.reactivateDevice, {
     license_id: licenseId,
     device_id: deviceId,
   })

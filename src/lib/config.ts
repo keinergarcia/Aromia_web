@@ -63,11 +63,17 @@ export interface AppRelease {
 export const APP_RELEASE: AppRelease = {
   windows: true,
   version: APP_VERSION,
-  publishedAt: null,
+  publishedAt: '2026-09-04',
   architecture: 'x64',
-  size: null,
-  changelog: [],
-  url: '',
+  size: '54.1 MB',
+  changelog: [
+    'Primera versión pública estable.',
+    'Activación de licencia integrada.',
+    'Validación de licencia en línea y período de gracia sin conexión.',
+    'Copia de seguridad automática diaria.',
+    'Los datos se guardan en la carpeta de usuario (%AppData%\\Aromia).',
+  ],
+  url: '/Aromia-Setup-1.0.0.exe',
 }
 
 export type DownloadStatus = 'download-ready' | 'coming-soon'

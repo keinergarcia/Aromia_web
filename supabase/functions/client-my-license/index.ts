@@ -22,7 +22,7 @@ export default {
     const { data, error } = await ctx.supabaseAdmin
       .from('licenses')
       .select(
-        'id, customer_id, product, plan, status, max_activations, issued_at, expires_at, min_app_version, max_app_version, activated_at, last_validated_at, activation_count, created_at, updated_at, license_activations(id, status, activated_at, last_validated_at, deactivated_at, devices(id, device_name, os, fingerprint))',
+        'id, customer_id, license_key, product, plan, status, max_activations, issued_at, expires_at, min_app_version, max_app_version, activated_at, last_validated_at, activation_count, created_at, updated_at, license_activations(id, status, activated_at, last_validated_at, deactivated_at, devices(id, device_name, os, fingerprint))',
       )
       .eq('customer_id', uid)
       .order('created_at', { ascending: false })

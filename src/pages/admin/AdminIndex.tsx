@@ -12,6 +12,8 @@ import {
   ChevronUp,
   KeyRound,
   Users,
+  Copy,
+  Check,
 } from 'lucide-react'
 import { PageHeader } from '@/components/dashboard/PageHeader'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -26,6 +28,7 @@ import {
   searchProfiles,
   updateLicense,
   deactivateDevice,
+  reactivateDevice,
 } from '@/lib/admin'
 import type { LicenseWithRelations, Profile } from '@/types'
 import { cn } from '@/lib/cn'
@@ -116,6 +119,32 @@ export function AdminIndex() {
       setError(e instanceof Error ? e.message : 'No se pudo desactivar el dispositivo')
     } finally {
       setBusy(false)
+    }
+  }
+
+  const runReactivate = async (licenseId: string, deviceId: string) => {
+    if (!window.confirm('¿Reactivar este dispositivo?')) return
+    setBusy(true)
+    setError(null)
+    try {
+      await reactivateDevice(licenseId, deviceId)
+      await load()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No se pudo reactivar el dispositivo')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+
+  const copyKey = async (key: string) => {
+    try {
+      await navigator.clipboard.writeText(key)
+      setCopiedKey(key)
+      window.setTimeout(() => setCopiedKey((c) => (c === key ? null : c)), 1500)
+    } catch {
+      setError('No se pudo copiar la clave')
     }
   }
 
@@ -248,6 +277,28 @@ export function AdminIndex() {
                   <p className="mt-0.5 text-xs text-slate-500">
                     Emitida: {formatDate(lic.issued_at)} · Creada: {formatDate(lic.created_at)}
                   </p>
+                  {lic.license_key && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="rounded-md bg-surface-800 px-2.5 py-1 font-mono text-xs text-slate-300">
+                        {lic.license_key}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => void copyKey(lic.license_key!)}
+                        leftIcon={
+                          copiedKey === lic.license_key ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )
+                        }
+                        className="px-2"
+                      >
+                        {copiedKey === lic.license_key ? 'Copiado' : 'Copiar'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex shrink-0 flex-wrap items-center gap-2">
@@ -284,7 +335,12 @@ export function AdminIndex() {
 
               {expanded === lic.id && (
                 <CardContent className="border-t border-white/10 pt-4">
-                  <LicenceDevices licence={lic} onDeactivate={runDeactivate} busy={busy} />
+                  <LicenceDevices
+                    licence={lic}
+                    onDeactivate={runDeactivate}
+                    onReactivate={runReactivate}
+                    busy={busy}
+                  />
                 </CardContent>
               )}
             </Card>
@@ -298,10 +354,12 @@ export function AdminIndex() {
 function LicenceDevices({
   licence,
   onDeactivate,
+  onReactivate,
   busy,
 }: {
   licence: LicenseWithRelations
   onDeactivate: (licenceId: string, deviceId: string) => void
+  onReactivate: (licenceId: string, deviceId: string) => void
   busy: boolean
 }) {
   if (!licence.license_activations || licence.license_activations.length === 0) {
@@ -332,7 +390,7 @@ function LicenceDevices({
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status={act.status} />
-            {act.status === 'active' && (
+            {act.status === 'active' ? (
               <Button
                 size="sm"
                 variant="ghost"
@@ -340,6 +398,16 @@ function LicenceDevices({
                 onClick={() => void onDeactivate(licence.id, act.device_id)}
               >
                 Desactivar
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busy}
+                onClick={() => void onReactivate(licence.id, act.device_id)}
+                leftIcon={<RotateCcw className="h-3.5 w-3.5" />}
+              >
+                Reactivar
               </Button>
             )}
           </div>
