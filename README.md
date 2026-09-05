@@ -27,8 +27,9 @@
 - **Landing page** pública con información sobre el producto, características, beneficios, capturas de pantalla, FAQ y contacto.
 - **Sistema de autenticación** completo: registro, inicio de sesión, recuperación y restablecimiento de contraseña.
 - **Panel de usuario** privado con perfil, estado de cuenta, descargas, licencia y dispositivos.
-- **Panel de administración** para gestionar licencias, buscar clientes y administrar dispositivos.
+- **Panel de administración** para gestionar licencias (crear, renovar, suspender, revocar), buscar clientes y administrar dispositivos (desactivar/reactivar).
 - **Sistema de licenciamiento** con Edge Functions de Supabase, firma Ed25519 y validación de licencias.
+- **Distribución del instalador**: AROMIA Desktop 1.0.0 (Windows x64) disponible desde el panel de usuario.
 
 ---
 
@@ -38,14 +39,34 @@
 |------|--------|
 | Fase 1 — Base web (landing, auth, panel usuario) | Implementada |
 | Fase 2 — Sistema de licenciamiento (Edge Functions, panel admin, firma Ed25519) | Implementada |
-| Integración con AROMIA Desktop | Pendiente |
+| Distribución del instalador (AROMIA Desktop 1.0.0, Windows x64) | Publicada |
+
+---
+
+## Instalador de AROMIA Desktop
+
+La última versión estable de **AROMIA Desktop** está publicada y disponible
+para descargar desde el panel de usuario.
+
+| Dato | Valor |
+|---|---|
+| Versión | **1.0.0** |
+| Publicado | 04/09/2026 |
+| Plataforma | Windows (x64) |
+| Tamaño | 54.1 MB |
+| Archivo | `public/Aromia-Setup-1.0.0.exe` |
+| Descarga (requiere sesión) | `/dashboard/descargas` |
+
+El instalador se activa con la clave de licencia emitida desde el panel admin,
+valida la licencia en línea contra las Edge Functions de AROMIA y conserva un
+período de gracia sin conexión.
 
 ---
 
 ## Estructura del proyecto
 
 ```
-├── public/                  # Estáticos (favicon, logo)
+├── public/                  # Estáticos (favicon, logo) e instalador del Desktop
 ├── src/
 │   ├── components/
 │   │   ├── auth/            # ProtectedRoute, AdminRoute, AuthCard
@@ -68,10 +89,28 @@
 │   ├── types/               # Tipos de la BD y del dominio
 │   └── styles/index.css
 ├── supabase/
-│   ├── migrations/          # Migraciones de BD (profiles, licenses, devices, admin)
-│   └── functions/           # Edge Functions de licenciamiento
-└── docs/                    # Documentación, investigación y planificación
+│   ├── migrations/          # Migraciones de BD (perfiles, licencias, dispositivos,
+│   │                        #  activaciones, admin, versiones de la app)
+│   └── functions/           # Edge Functions de licenciamiento (helpers en _shared)
 ```
+
+---
+
+## Base de datos (Supabase)
+
+Las migraciones viven en `supabase/migrations/`. Todo el acceso a datos de
+licencias pasa por Edge Functions; las escrituras son siempre server-side y las
+lecturas del cliente están restringidas por RLS.
+
+| Migración | Contenido |
+|---|---|
+| `0001_create_profiles` | Tabla `profiles` (extiende `auth.users`) |
+| `0002_create_licenses` | Tabla `licenses` (solo guarda el hash SHA-256 de la clave) |
+| `0003_create_devices` | Tabla `devices` (solo guarda el hash SHA-256 del fingerprint) |
+| `0004_create_license_activations` | Tabla `license_activations` (slots de activación) |
+| `0005_create_admin_users` | Tabla `admin_users` (fuente de verdad del rol admin) |
+| `0006_create_app_versions` | Tabla `app_versions` (publicación de versiones del Desktop) |
+| `0007_admin_gate` | RPC `is_admin()`/`authorize()` y policies de lectura admin |
 
 ---
 
@@ -179,6 +218,7 @@ npm run dev
 | `admin-users-search` | Busca clientes (admin) |
 | `admin-license-update` | Actualiza licencias (admin) |
 | `admin-deactivate-device` | Desactiva dispositivos desde admin |
+| `admin-reactivate-device` | Reactiva un dispositivo desactivado (admin) |
 | `client-my-license` | Licencia del usuario autenticado |
 | `client-my-devices` | Dispositivos del usuario autenticado |
 
@@ -186,5 +226,5 @@ npm run dev
 
 <p align="center">
   Desarrollado por <strong>ElChivalez</strong><br/>
-  <sub>Septiembre 2025</sub>
+  <sub>Septiembre 2026</sub>
 </p>
